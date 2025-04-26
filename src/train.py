@@ -16,8 +16,8 @@ def log_system_metrics(run):
     """Log system metrics to MLflow"""
     cpu_percent = psutil.cpu_percent()
     memory_percent = psutil.virtual_memory().percent
-    run.log_metric("cpu_usage", cpu_percent)
-    run.log_metric("memory_usage", memory_percent)
+    mlflow.log_metric("cpu_usage", cpu_percent)
+    mlflow.log_metric("memory_usage", memory_percent)
 
 def main():
     config = load_config()
@@ -55,15 +55,9 @@ def main():
         y_pred = model.predict(X_val)
         
         accuracy = accuracy_score(y_val, y_pred)
-        precision = precision_score(y_val, y_pred)
-        recall = recall_score(y_val, y_pred)
-        f1 = f1_score(y_val, y_pred)
         
         # Log metrics
         mlflow.log_metric("accuracy", accuracy)
-        mlflow.log_metric("precision", precision)
-        mlflow.log_metric("recall", recall)
-        mlflow.log_metric("f1_score", f1)
         mlflow.log_metric("training_time", training_time)
         
         # Log system metrics periodically during training
