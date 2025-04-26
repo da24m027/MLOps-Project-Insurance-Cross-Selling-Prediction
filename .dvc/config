@@ -1,0 +1,7 @@
+[core]
+    remote = myremote
+['remote "myremote"']
+    url = gdrive://1i1KM0CYjiEOozfE50P6bgMHDKkItFYK_
+    gdrive_acknowledge_abuse = true
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = C:\Users\vishu\Downloads\dynamic-reef-454311-k9-34b959333e82.json
