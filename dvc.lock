@@ -1,0 +1,51 @@
+schema: '2.0'
+stages:
+  process_data:
+    cmd: python src/data_preprocessing.py
+    deps:
+    - path: data/raw/test.csv
+      hash: md5
+      md5: fa42a0b04475ea841b2eefd117795b18
+      size: 6927930
+    - path: data/raw/train.csv
+      hash: md5
+      md5: 578f3642d464e21249ea4489cf760be8
+      size: 21432357
+    - path: src/data_preprocessing.py
+      hash: md5
+      md5: f90c7552bb23f2221554b4fadef986cb
+      size: 2706
+    outs:
+    - path: data/processed/test_processed.csv
+      hash: md5
+      md5: 6869c4fd10d5af4c75d260aafb1bedfb
+      size: 5089444
+    - path: data/processed/train_processed.csv
+      hash: md5
+      md5: ced2248cc7c0b9585d1dae1118e689ad
+      size: 12823986
+    - path: data/processed/val_processed.csv
+      hash: md5
+      md5: 08f0eddb517d01f858ff26a6221c5da9
+      size: 3206006
+  train_data:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/train_processed.csv
+      hash: md5
+      md5: ced2248cc7c0b9585d1dae1118e689ad
+      size: 12823986
+    - path: data/processed/val_processed.csv
+      hash: md5
+      md5: 08f0eddb517d01f858ff26a6221c5da9
+      size: 3206006
+    - path: src/train.py
+      hash: md5
+      md5: a63f88bb9f558e8ce53497078589638b
+      size: 2526
+    outs:
+    - path: models/latest_model
+      hash: md5
+      md5: c9c31f80afa2cdc99bf84c84b0b366ef.dir
+      size: 3159820
+      nfiles: 5

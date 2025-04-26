@@ -1,0 +1,16 @@
+artifact_uri: mlflow-artifacts:/770437236853060971/2eaa18899b4b4c659b3bc159c76c3453/artifacts
+deleted_time: 1745649527357
+end_time: 1745649179244
+entry_point_name: ''
+experiment_id: '770437236853060971'
+lifecycle_stage: deleted
+run_id: 2eaa18899b4b4c659b3bc159c76c3453
+run_name: bold-crab-72
+run_uuid: 2eaa18899b4b4c659b3bc159c76c3453
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1745649155314
+status: 4
+tags: []
+user_id: vishu
