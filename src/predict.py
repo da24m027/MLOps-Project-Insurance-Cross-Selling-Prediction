@@ -5,12 +5,12 @@ import os
 from data_preprocessing import *
 
 def load_config():
-    with open("config/params.yaml", "r") as f:
+    with open("../config/params.yaml", "r") as f:
         return yaml.safe_load(f)
 
 def load_model():
     config = load_config()
-    model = mlflow.sklearn.load_model("models/latest_model")
+    model = mlflow.sklearn.load_model("../models/latest_model")
     return model
 
 def predict_single(input_data):
