@@ -1,0 +1,68 @@
+base:
+  random_state: 42
+  target_col: "Response"  # Updated to match your dataset
+
+data_split:
+  val_size: 0.2
+  test_size: 0.1
+
+preprocessing:
+  numeric_features:
+    - "Age"
+    - "Region_Code"
+    - "Annual_Premium"
+    - "Policy_Sales_Channel"
+    - "Vintage"
+    
+  categorical_features:
+    - "Gender"
+    - "Vehicle_Damage"
+    
+  binary_features:
+    - "Driving_License"
+    - "Previously_Insured"
+    
+  features_to_drop:
+    - "id"  
+    
+  vehicle_age_mapping:
+    "< 1 Year": 0
+    "1-2 Year": 1
+    "> 2 Years": 2
+
+feature_engineering:
+  age_bins: [18, 25, 35, 45, 55, 65, 100]
+  age_labels: ["0", "1", "2", "3", "4", "5"]
+  premium_bins: [0, 20000, 40000, 60000, 80000, 100000]
+  premium_labels: ["0", "1", "2", "3", "4"]
+
+model_params:
+  model_type: "RandomForestClassifier"
+  n_estimators: 100
+  max_depth: 8
+  min_samples_split: 2
+  min_samples_leaf: 1
+  class_weight: "balanced"
+
+mlflow:
+  tracking_uri: "http://127.0.0.1:5000"
+  experiment_name: "Insurance_Cross_Sell"
+  registered_model_name: "insurance_cross_sell_rf"
+  artifact_path: "models"
+
+monitoring:
+  drift_threshold: 0.05
+  accuracy_threshold: 0.75
+  precision_threshold: 0.7
+  recall_threshold: 0.65
+  monitoring_window: 7  # days
+
+api:
+  host: "0.0.0.0"
+  port: 8000
+  debug: True
+  log_level: "info"
+
+streamlit:
+  port: 8501
+  theme: "light"

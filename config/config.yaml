@@ -1,0 +1,79 @@
+data_paths:
+  raw:
+    train: "data/raw/train.csv"
+    test: "data/raw/test.csv"
+  processed:
+    train: "data/processed/train_processed.csv"
+    val: "data/processed/val_processed.csv"
+    test: "data/processed/test_processed.csv"
+
+model_paths:
+  production: "models/production_model"
+  staging: "models/staging_model"
+  latest: "models/latest_model"
+
+feature_engineering:
+  age_bins: [18, 25, 35, 45, 55, 65, 100]
+  age_labels: ["0", "1", "2", "3", "4", "5"]
+  premium_bins: [0, 20000, 40000, 60000, 80000, 100000]
+  premium_labels: ["0", "1", "2", "3", "4", "5"]
+
+column_mapping:
+  original:
+    - "id"
+    - "Gender"
+    - "Age"
+    - "Driving_License"
+    - "Region_Code"
+    - "Previously_Insured"
+    - "Vehicle_Age"
+    - "Vehicle_Damage"
+    - "Annual_Premium"
+    - "Policy_Sales_Channel"
+    - "Vintage"
+    - "Response"
+  clean:
+    - "id"
+    - "gender"
+    - "age"
+    - "driving_license"
+    - "region_code"
+    - "previously_insured"
+    - "vehicle_age"
+    - "vehicle_damage"
+    - "annual_premium"
+    - "policy_sales_channel"
+    - "vintage"
+    - "response"
+
+evaluation:
+  metrics:
+    - "accuracy"
+    - "precision"
+    - "recall"
+    - "f1"
+    - "roc_auc"
+  threshold: 0.5
+
+deployment:
+  docker_image: "insurance-cross-sell"
+  memory_limit: "2G"
+  cpu_limit: 1.0
+
+logging:
+  file: "logs/app.log"
+  level: "INFO"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+alerting:
+  email:
+    enabled: False
+    recipients:
+      - "admin@example.com"
+    smtp_server: "smtp.example.com"
+    smtp_port: 587
+  slack:
+    enabled: False
+    webhook_url: ""
