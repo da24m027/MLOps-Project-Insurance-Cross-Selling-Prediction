@@ -1,0 +1,198 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Insurance Cross-Selling Prediction</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/styles.css') }}">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/alpinejs/3.10.2/cdn.min.js" defer></script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto px-4 py-8" x-data="app()">
+        <header class="mb-10">
+            <h1 class="text-3xl font-bold text-center text-blue-800">Insurance Cross-Selling Prediction</h1>
+            <p class="text-center text-gray-600">Identify customers likely to purchase vehicle insurance</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <!-- Customer Input Form -->
+            <div class="lg:col-span-1 bg-white rounded-lg shadow-md p-6">
+                <h2 class="text-xl font-semibold mb-4">Customer Information</h2>
+                <form id="customerForm" @submit.prevent="submitForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Name</label>
+                            <input type="text" x-model="form.name" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Mobile Number</label>
+                            <input type="text" x-model="form.mobile" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Age</label>
+                        <input type="number" x-model="form.age" min="18" max="100" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Gender</label>
+                        <select x-model="form.gender" required class="mt-1 form-select w-full rounded-md border-gray-300">
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Driving License</label>
+                        <select x-model="form.driving_license" required class="mt-1 form-select w-full rounded-md border-gray-300">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Region Code</label>
+                        <input type="number" x-model="form.region_code" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Previously Insured</label>
+                        <select x-model="form.previously_insured" required class="mt-1 form-select w-full rounded-md border-gray-300">
+                            <option value="1">Yes</option>
+                            <option value="0">No</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Vehicle Age</label>
+                        <select x-model="form.vehicle_age" required class="mt-1 form-select w-full rounded-md border-gray-300">
+                            <option value="< 1 Year">< 1 Year</option>
+                            <option value="1-2 Year">1-2 Year</option>
+                            <option value="> 2 Years">> 2 Years</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Vehicle Damage</label>
+                        <select x-model="form.vehicle_damage" required class="mt-1 form-select w-full rounded-md border-gray-300">
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Annual Premium</label>
+                        <input type="number" x-model="form.annual_premium" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Policy Sales Channel</label>
+                        <input type="number" x-model="form.policy_sales_channel" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Vintage</label>
+                        <input type="number" x-model="form.vintage" required class="mt-1 form-input w-full rounded-md border-gray-300">
+                    </div>
+
+                    <div>
+                        <button type="submit" class="w-full py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+                            Submit
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Results Section -->
+            <div class="lg:col-span-2">
+                <!-- Prediction Result -->
+                <div x-show="showResult" class="mb-6 p-4 rounded-lg shadow-md" :class="prediction ? 'bg-green-100' : 'bg-gray-100'">
+                    <h3 class="text-lg font-semibold mb-2">Prediction Result</h3>
+                    <p class="text-lg">
+                        <span class="font-medium">Customer:</span> <span x-text="resultCustomer"></span>
+                    </p>
+                    <p class="text-lg">
+                        <span class="font-medium">Prediction:</span> 
+                        <span x-show="prediction" class="text-green-600 font-semibold">Likely to purchase insurance</span>
+                        <span x-show="!prediction" class="text-gray-600">Not likely to purchase insurance</span>
+                    </p>
+                </div>
+
+                <!-- Cross-Sell Opportunities -->
+                <div class="bg-white rounded-lg shadow-md p-6">
+                    <h2 class="text-xl font-semibold mb-4">Cross-Sell Opportunities</h2>
+                    <p class="text-gray-600 mb-4">Customers likely to purchase vehicle insurance:</p>
+                    
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <template x-for="customer in positiveCustomers" :key="customer.timestamp">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" x-text="customer.name"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="customer.mobile"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="customer.timestamp"></td>
+                                    </tr>
+                                </template>
+                                <tr x-show="positiveCustomers.length === 0">
+                                    <td colspan="3" class="px-6 py-4 text-center text-sm text-gray-500">No customers found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- All Entries (Toggleable) -->
+                <div class="mt-6 bg-white rounded-lg shadow-md p-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-semibold">All Customer Entries</h2>
+                        <button @click="showAllEntries = !showAllEntries" class="px-3 py-1 text-sm bg-blue-100 text-blue-800 rounded hover:bg-blue-200">
+                            <span x-text="showAllEntries ? 'Hide' : 'Show'"></span> Entries
+                        </button>
+                    </div>
+                    
+                    <div x-show="showAllEntries" class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Mobile</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Prediction</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                <template x-for="customer in allCustomers" :key="customer.timestamp">
+                                    <tr>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900" x-text="customer.name"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="customer.mobile"></td>
+                                        <td class="px-6 py-4 whitespace-nowrap">
+                                            <span x-show="customer.prediction" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Yes</span>
+                                            <span x-show="!customer.prediction" class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800">No</span>
+                                        </td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500" x-text="customer.timestamp"></td>
+                                    </tr>
+                                </template>
+                                <tr x-show="allCustomers.length === 0">
+                                    <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No entries found</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', path='/js/app.js') }}"></script>
+</body>
+</html>
