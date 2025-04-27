@@ -2,7 +2,7 @@ import mlflow
 import pandas as pd
 import yaml
 import os
-from data_preprocessing import *
+from src.data_preprocessing import *
 
 def load_config():
     with open("config/params.yaml", "r") as f:
