@@ -8,7 +8,7 @@ import pandas as pd
 from datetime import datetime
 import json
 import os
-from predict import predict_single
+from src.predict import predict_single
 
 app = FastAPI(title="Insurance Cross-Selling Prediction")
 
