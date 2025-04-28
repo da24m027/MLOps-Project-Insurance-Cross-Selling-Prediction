@@ -1,21 +1,65 @@
-version: '3'
+version: '3.8'
 
 services:
-  prometheus:
-    image: prom/prometheus
+  # FastAPI Insurance Application
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
     ports:
-      - "9090:9090"
+      - "8000:8000"
     volumes:
-      - ./config/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./data:/app/data
+    environment:
+      - PROMETHEUS_MULTIPROC_DIR=/tmp
+      - METRICS_ENABLED=true
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - insurance-network
 
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:v2.44.0
+    ports:
+      - "9091:9090"
+    volumes:
+      - ./prometheus:/etc/prometheus
+      - prometheus_data:/prometheus
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - insurance-network
+
+  # Grafana for visualization
   grafana:
-    image: grafana/grafana
+    image: grafana/grafana:10.1.0
     ports:
       - "3000:3000"
     volumes:
-      - grafana-storage:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning
+      - ./grafana/dashboards:/var/lib/grafana/dashboards
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-simple-json-datasource
     depends_on:
       - prometheus
+    restart: unless-stopped
+    networks:
+      - insurance-network
+
+networks:
+  insurance-network:
+    driver: bridge
 
 volumes:
-  grafana-storage:
+  prometheus_data:
+  grafana_data:
